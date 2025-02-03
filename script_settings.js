@@ -19,8 +19,8 @@ let settings = storedSettings || {
   allowSeparateTickets: false,
   overmatchTickets: 6,
   telegramBotId: "7568958572:AAG3wBr7C-gRE4iBxJfgrvkoY03AtveotP8",
-  telegramBotChatId: -4750826081,
-  telegramBotChatErrorsId: -4750826081,
+  telegramBotChatId: -1002374634166,
+  telegramBotChatErrorsId: -1002374634166,
   production: true,
   debug: false,
   reload: true,
@@ -102,9 +102,9 @@ function updateSettings() {
   settings.allowSeparateTickets = false;
   settings.overmatchTickets = 6;
   settings.delayBeforeBuy = 2;
-  settings.telegramBotId = "5712671465:AAFqebxudxqEcGp2SZm814vR8RtTKLgEjGs";
-  settings.telegramBotChatId = -1001961554005;
-  settings.telegramBotChatErrorsId = -4572872479;
+  settings.telegramBotId = "7568958572:AAG3wBr7C-gRE4iBxJfgrvkoY03AtveotP8";
+  settings.telegramBotChatId = -1002374634166;
+  settings.telegramBotChatErrorsId = -1002374634166;
   settings.production = true;
   settings.debug = false;
   settings.reload = true;
