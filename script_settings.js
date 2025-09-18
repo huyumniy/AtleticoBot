@@ -17,14 +17,11 @@ let settings = storedSettings || {
   indexUrl: "https://entradas.atleticodemadrid.com/",
   url: getSessionUrl(),
   allowSeparateTickets: false,
-  overmatchTickets: 6,
-  telegramBotId: "7568958572:AAG3wBr7C-gRE4iBxJfgrvkoY03AtveotP8",
   telegramBotChatId: -1002374634166,
   telegramBotChatErrorsId: -1002374634166,
   production: true,
   debug: false,
   reload: true,
-  delayBeforeBuy: 2,
   secondsToRestartIfNoTicketsFound: 10,
   timesToBrowserTabReload: 200,
   minPrice: null,
@@ -94,15 +91,12 @@ function updateSettings() {
   settings.maxPrice = maxPrice !== "" ? maxPrice : null;
   settings.ticketsToBuy = ticketsToBuy !== "" ? ticketsToBuy : null;
   settings.chromeProfile = "S3U1_1";
-  settings.indexUrl = "https://www.entradas.atleticodemadrid.com/";
+  settings.indexUrl = "https://entradas.atleticodemadrid.com/";
 
   // Dynamically get the session URL when the button is clicked
   settings.url = getSessionUrl();
 
   settings.allowSeparateTickets = false;
-  settings.overmatchTickets = 6;
-  settings.delayBeforeBuy = 2;
-  settings.telegramBotId = "7568958572:AAG3wBr7C-gRE4iBxJfgrvkoY03AtveotP8";
   settings.telegramBotChatId = -1002374634166;
   settings.telegramBotChatErrorsId = -1002374634166;
   settings.production = true;
@@ -123,43 +117,44 @@ function getSessionUrl() {
   const currentUrl = window.location.href;
   const sessionNumber = getSessionNumberFromUrl(currentUrl);
 
-  // Check if the URL contains /es_ES/ or /en_US/ and set the language code accordingly
-  const languageCode = currentUrl.includes("/es_ES/") ? "es_ES" : "en_US";
+  if (sessionNumber) {
+    // Determine the event type based on the URL pattern
+    let eventType = "";
+    if (currentUrl.includes("clubatleticodemadrid")) {
+      eventType = "clubatleticodemadrid";
+    } else if (currentUrl.includes("neptunopremium_liga")) {
+      eventType = "neptunopremium_liga";
+    }
 
-  // Determine the event type based on the URL pattern
-  let eventType = "";
-  if (currentUrl.includes("clubatleticodemadrid")) {
-    eventType = "clubatleticodemadrid";
-  } else if (currentUrl.includes("neptunopremium_liga")) {
-    eventType = "neptunopremium_liga";
-  }
 
   // Build the URL based on the event type
-  if (eventType === "clubatleticodemadrid") {
-    const eventNumber = extractEventNumber(
-      currentUrl,
-      `https://entradas.atleticodemadrid.com/clubatleticodemadrid/${languageCode}/entradas/evento/`
-    );
-    return `https://entradas.atleticodemadrid.com/clubatleticodemadrid/${languageCode}/entradas/evento/${eventNumber}/session/${sessionNumber}/select?viewCode=V_blockmap_view`;
-  } else if (eventType === "neptunopremium_liga") {
-    const eventNumber = extractEventNumber(
-      currentUrl,
-      `https://entradas.atleticodemadrid.com/neptunopremium_liga/${languageCode}/entradas/evento/`
-    );
-    return `https://entradas.atleticodemadrid.com/neptunopremium_liga/${languageCode}/entradas/evento/${eventNumber}/session/${sessionNumber}/select?viewCode=V_blockmap_view`;
+    let result = eventType
+      ? `https://entradas.atleticodemadrid.com/${eventType}/select/${sessionNumber}?viewCode=V_blockmap_view`
+      : null;
+    return result;
   }
 
   return null;
 }
 
 function getSessionNumberFromUrl(url) {
-  if (url.includes("session")) return url.split("/session/")[1].split("/")[0];
+  const clubatleticodemadridPattern =
+    "https://entradas.atleticodemadrid.com/clubatleticodemadrid/select/";
+  const neptunopremiumPattern =
+    "https://entradas.atleticodemadrid.com/neptunopremium_liga/select/";
+  
+  if (url.startsWith(clubatleticodemadridPattern)) {
+    return extractSessionNumber(url, clubatleticodemadridPattern);
+  } else if (url.startsWith(neptunopremiumPattern)) {
+    return extractSessionNumber(url, neptunopremiumPattern);
+  }
 
   return null;
 }
 
 function extractSessionNumber(url, urlPattern) {
-  const sessionNumber = url.substring(urlPattern.length).split("/")[0];
+  let sessionNumber = url.substring(urlPattern.length).split("/")[0];
+  if (!sessionNumber) sessionNumber = url.substring(urlPattern.length).split("?")[0];
   return sessionNumber;
 }
 
